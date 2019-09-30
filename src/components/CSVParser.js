@@ -4,7 +4,9 @@ import ResultTable from './ResultTable';
 import Papa from 'papaparse'
 import { CSVLink } from "react-csv";
 import NetworkDropdown from './NetworkDropdown'
+import ButtonExampleAnimated from './ButtonExampleAnimated'
 import './CSVParser.css'
+
 
 export default class CSVParser extends Component {
     constructor(props) {
@@ -19,7 +21,8 @@ export default class CSVParser extends Component {
           csvReady: null,
           instructions: "Select a Network",
           fieldsEstablished: null,
-          requiredHeaders: null
+          requiredHeaders: null,
+          fieldObjectsForDownload: null
         }
         this.onChange = this.onChange.bind(this)
         this.updateData = this.updateData.bind(this)
@@ -51,40 +54,35 @@ export default class CSVParser extends Component {
           idCounter++;
           return {header: textField, required: false, id: idCounter};
         })
-        console.log('field objects', fieldObjects)
+        const fieldObjectsForDownload = fields.map(textField => {
+          idCounter++;
+          return {label: textField, key: idCounter};
+        })
+
         this.setState({
           data: data,
-          fields: fieldObjects
-        }, () => console.log('updated state for csv data',this.state));
+          fields: fieldObjects,
+          csvReady: true
+        });
     }
     
 
-    //unparse csv data for export
-    csvUnparse(){
-      const csv = Papa.unparse({
-        "fields": this.state.fields,
-        "data": this.state.csvData
-      });
-      
-      console.log(csv)
-    }
 
     pushRowToMasterCsv(row){
         this.state.csvData.push(row)
     }
 
     exportCSV = () => {
+      const fieldObjectsForDownload = this.state.fieldObjectsForDownload
       return(
-        <CSVLink data={this.state.csvData} headers={this.state.csvFields}>
+        <CSVLink className='export-button' data={this.state.data.slice(1, 5) } headers={fieldObjectsForDownload}>
           Export
         </CSVLink>
         )
     }
 
-    downloadCSV = (e) => {
-      e.preventDefault()
-      this.csvUnparse()
-    }
+
+
     setNetwork = (e, data) => {
       e.preventDefault()
       const network = data.options[data.value - 1]
@@ -127,6 +125,8 @@ export default class CSVParser extends Component {
       </form>)
     }
 
+
+
     render(){
       const { data, fields, fileUploaded, file, csvReady, network, instructions, fieldsEstablished } = this.state
         return(
@@ -136,14 +136,20 @@ export default class CSVParser extends Component {
               </div>
               <div className='network-dropdown-div'>
                <NetworkDropdown setNetwork={this.setNetwork}/>
-               { csvReady ? this.exportCSV() : null}
               </div>
               <div className='file-upload-div'>
-               { network ? this.displayForm() : null}
+               { network && !fileUploaded ? this.displayForm() : null}
+               { network && fields ? this.exportCSV() : null}
               </div>        
-              { fileUploaded && !data ? this.getData(file) : null}
+              { fileUploaded && !data ? this.getData(file) : null }
               <div>
-                {data && fields ? <ResultTable data={data} fields={fields} updateRows={this.pushRowToMasterCsv} updateHeaderRequirement={this.updateHeaderRequirement} />  : null}
+                {data && fields ? 
+                <ResultTable 
+                  data={data} 
+                  fields={fields} 
+                  updateRows={this.pushRowToMasterCsv} 
+                  updateHeaderRequirement={this.updateHeaderRequirement} 
+                  />  : null}
               </div>
             </div>
         )
