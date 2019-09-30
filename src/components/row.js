@@ -1,11 +1,11 @@
 import React from 'react'
 
 
-export const row = (data, callback) =>{
+export const row = (data, fields, callback) =>{
     //the data variable input here is one row of the parsed excel 
-    
+    debugger
     //checks whether the row is empty 
-    let empty = checkEmpty(data)
+    let empty = checkEmpty(data, fields)
 
     //if row is not empty, enter if statement
     if(!empty){
@@ -21,9 +21,10 @@ export const row = (data, callback) =>{
 export default row
 
         
-const checkEmpty = data => {
+const checkEmpty = (data, fields) => {
     let emptyReqCols = []
     let emptyOptCols = []
+    
     const propertyField = data['Property'].length !== 0
     const agencyField = data['Agency'].length !== 0
     const airDateField =data['Air Date'].length !== 0

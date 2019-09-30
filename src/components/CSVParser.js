@@ -3,6 +3,7 @@ import { nullLiteral } from '@babel/types';
 import Table from './Table';
 import Papa from 'papaparse'
 import { CSVLink } from "react-csv";
+import NetworkDropdown from './Dropdown'
 
 export default class CSVParser extends Component {
     constructor(props) {
@@ -11,24 +12,8 @@ export default class CSVParser extends Component {
           file:null,
           fileUploaded: false,
           data: null,
-          csvFields: [
-           'Property',
-           'Agency',
-           'Advertiser/Product',
-           'Air Date',
-           'Aired Length',
-           'Order Product Description',
-           'Aired Time ',
-           'Aired Ad-ID',
-           'Rate',
-           'Rev Code 2',
-           'Field 1',
-           'Program',
-           'Start Time',
-           'Time Period',
-           'Deal/Order #',
-           'Line #'
-            ],
+          csvFields: [],
+          network: null,
           csvData: [],
           csvReady: null
         }
@@ -50,7 +35,6 @@ export default class CSVParser extends Component {
             header: true,
             skipEmptyLines: true,
             complete: this.updateData
-
         })
     }
 
@@ -58,8 +42,9 @@ export default class CSVParser extends Component {
         const data = result.data;
         this.setState({
           data: data,
-          csvReady: true
-        }, () => console.log('updated state for csv data',this.state.data));
+          csvReady: true,
+          fields: Object.keys(data[0])
+        }, () => console.log('updated state for csv data',this.state));
     }
     
 
@@ -89,10 +74,19 @@ export default class CSVParser extends Component {
       e.preventDefault()
       this.csvUnparse()
     }
+    setNetwork = (e) => {
+      e.preventDefault()
+      console.log(e.target.value)
+      this.setState({
+        network: e.target.value
+      })
+    }
 
     render(){
+      const { data, fields, fileUploaded, file } = this.state
         return(
             <div className='table-wrapper'>
+               <NetworkDropdown setNetwork={this.setNetwork}/>
                 <h1>Upload file</h1>
                 {this.state.csvReady ? this.exportCSV() : null}
                 <form className='input-form' onSubmit={this.onFormSubmit}x>
@@ -103,8 +97,8 @@ export default class CSVParser extends Component {
                     onChange={this.onChange}
                     />
                 </form>
-                {this.state.fileUploaded && !this.state.data ? this.getData(this.state.file) : null}
-                {this.state.data ? <Table data={this.state.data} updateRows={this.pushRowToMasterCsv} />  : null}
+                {fileUploaded && !this.state.data ? this.getData(file) : null}
+                {data && fields ? <Table data={data} fields={fields} updateRows={this.pushRowToMasterCsv} />  : null}
             </div>
         )
     }
