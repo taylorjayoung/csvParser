@@ -1,26 +1,18 @@
-import React, {Component, Fragment} from 'react'
+import React from 'react'
+import { Icon, Table } from 'semantic-ui-react'
 
-export default class HeaderClass extends Component { 
-    //take in the fields state from props and create headers for csv
-    createHeaders = (fields) => {
+ 
+
+const headerRow = (fields, cb) => { 
+      //take in the fields state from props and create headers for csv
       const headers = []
       for(const field of fields){
-        const header = (<tr>{field}</tr>)
+        const header = (<Table.HeaderCell>{field}</Table.HeaderCell>)
         headers.push(header)
       }
       return headers
-    }
-    
-  //create a semantic ui table that can be selected
-  render(){
-    return(
-      <div>
-        
-          <h1>hi</h1>
-      </div>
-    )
-  }
 }
 
 
 
+export default headerRow

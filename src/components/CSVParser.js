@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { nullLiteral } from '@babel/types';
-import Table from './Table';
+import ResultTable from './ResultTable';
 import Papa from 'papaparse'
 import { CSVLink } from "react-csv";
 import NetworkDropdown from './NetworkDropdown'
@@ -13,16 +13,18 @@ export default class CSVParser extends Component {
           file:null,
           fileUploaded: false,
           data: null,
-          csvFields: [],
+          fields: null,
           network: null,
           csvData: [],
           csvReady: null,
           instructions: "Select a Network",
-          fieldsEstablished: null
+          fieldsEstablished: null,
+          requiredHeaders: null
         }
         this.onChange = this.onChange.bind(this)
         this.updateData = this.updateData.bind(this)
         this.pushRowToMasterCsv = this.pushRowToMasterCsv.bind(this)
+        this.updateHeaderRequirement = this.updateHeaderRequirement.bind(this)
       }
 
     onChange(e) {
@@ -43,10 +45,16 @@ export default class CSVParser extends Component {
 
     updateData(result) {
         const data = result.data;
+        const fields = Object.keys(data[0])
+        let idCounter = 0
+        const fieldObjects = fields.map(textField => {
+          idCounter++;
+          return {header: textField, required: false, id: idCounter};
+        })
+        console.log('field objects', fieldObjects)
         this.setState({
           data: data,
-          csvReady: true,
-          fields: Object.keys(data[0])
+          fields: fieldObjects
         }, () => console.log('updated state for csv data',this.state));
     }
     
@@ -94,6 +102,18 @@ export default class CSVParser extends Component {
       }
 
     }
+    updateHeaderRequirement = (e, id, header ) => {
+      e.preventDefault()
+      const headerIdx= this.state.fields.map(function(e) { return e.header; }).indexOf(header);
+      const updatedHeaders = this.state.fields.map(function(header) { 
+         if(header.id === id){
+           header.required = !header.required
+         }; 
+        });
+        this.setState({
+          headers: updatedHeaders
+        })
+    }
 
     displayForm = () => {
       return(
@@ -121,8 +141,10 @@ export default class CSVParser extends Component {
               <div className='file-upload-div'>
                { network ? this.displayForm() : null}
               </div>        
-              { fileUploaded && !this.state.data ? this.getData(file) : null}
-           
+              { fileUploaded && !data ? this.getData(file) : null}
+              <div>
+                {data && fields ? <ResultTable data={data} fields={fields} updateRows={this.pushRowToMasterCsv} updateHeaderRequirement={this.updateHeaderRequirement} />  : null}
+              </div>
             </div>
         )
     }
