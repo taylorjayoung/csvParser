@@ -20,9 +20,7 @@ const options = [
 ]
 
 const NetworkDropdown = (props) => (
-  <div>
-   <Dropdown clearable options={options} placeholder={"Select Network"} onChange={props.setNetwork}/>
-  </div>
+   <NetworkDropdown clearable options={options} placeholder={"Select Network"} onChange={props.setNetwork}/>
 )
 
 export default NetworkDropdown

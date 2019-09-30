@@ -3,7 +3,8 @@ import { nullLiteral } from '@babel/types';
 import Table from './Table';
 import Papa from 'papaparse'
 import { CSVLink } from "react-csv";
-import NetworkDropdown from './Dropdown'
+import NetworkDropdown from './NetworkDropdown'
+import './CSVParser.css'
 
 export default class CSVParser extends Component {
     constructor(props) {
@@ -15,7 +16,9 @@ export default class CSVParser extends Component {
           csvFields: [],
           network: null,
           csvData: [],
-          csvReady: null
+          csvReady: null,
+          instructions: "Select a Network",
+          fieldsEstablished: null
         }
         this.onChange = this.onChange.bind(this)
         this.updateData = this.updateData.bind(this)
@@ -74,31 +77,52 @@ export default class CSVParser extends Component {
       e.preventDefault()
       this.csvUnparse()
     }
-    setNetwork = (e) => {
+    setNetwork = (e, data) => {
       e.preventDefault()
-      console.log(e.target.value)
-      this.setState({
-        network: e.target.value
-      })
+      const network = data.options[data.value - 1]
+      
+      if( !network ){
+        this.setState({
+          network: network,
+          instructions: "Select a Network"
+        })
+      } else {
+        this.setState({
+          network: network,
+          instructions: "Upload a Prelog"
+        })
+      }
+
+    }
+
+    displayForm = () => {
+      return(
+      <form className='input-form' onSubmit={this.onFormSubmit}x>
+          <input 
+          className='input-field'
+          type='file' 
+          accept='.csv, .xlsx, .xsx, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel' 
+          onChange={this.onChange}
+          />
+      </form>)
     }
 
     render(){
-      const { data, fields, fileUploaded, file } = this.state
+      const { data, fields, fileUploaded, file, csvReady, network, instructions, fieldsEstablished } = this.state
         return(
-            <div className='table-wrapper'>
+            <div className='csv-wrapper'>
+              <div className='instructions-div'>
+                <h1>{ instructions }</h1>
+              </div>
+              <div className='network-dropdown-div'>
                <NetworkDropdown setNetwork={this.setNetwork}/>
-                <h1>Upload file</h1>
-                {this.state.csvReady ? this.exportCSV() : null}
-                <form className='input-form' onSubmit={this.onFormSubmit}x>
-                    <input 
-                    className='input-field'
-                    type='file' 
-                    accept='.csv, .xlsx, .xsx, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel' 
-                    onChange={this.onChange}
-                    />
-                </form>
-                {fileUploaded && !this.state.data ? this.getData(file) : null}
-                {data && fields ? <Table data={data} fields={fields} updateRows={this.pushRowToMasterCsv} />  : null}
+               { csvReady ? this.exportCSV() : null}
+              </div>
+              <div className='file-upload-div'>
+               { network ? this.displayForm() : null}
+              </div>        
+              { fileUploaded && !this.state.data ? this.getData(file) : null}
+           
             </div>
         )
     }

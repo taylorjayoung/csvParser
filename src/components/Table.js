@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import row from './row'
-
-
+import './Table.css'
+import HeaderClass from './HeaderClass'
 export default class Table extends Component {
 
     //iterate over each row and apply method logic
@@ -16,15 +16,7 @@ export default class Table extends Component {
         })    
         return rows
     }
-    //take in the fields state from props and create headers for csv
-    createHeaders = (fields) => {
-      const headers = []
-      for(const field of fields){
-        const header = (<tr>{field}</tr>)
-        headers.push(header)
-      }
-      return headers
-    }
+
 
     render(){
         const {data, fields, updateRows} = this.props
@@ -32,12 +24,12 @@ export default class Table extends Component {
           <div>
              <table>  
                <thead>   
-                <tr>
-                  {this.createHeaders(fields)}
+                <tr className="csv-field">
+                  {fields && !data ? <HeaderClass fields={fields} /> : null}
                 </tr>         
                </thead>    
               <tbody>
-                {this.createRows(data, fields, updateRows)}
+                {data && data ? this.createRows(data, fields, updateRows) : null}
               </tbody>
             </table>
           </div>
