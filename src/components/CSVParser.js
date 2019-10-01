@@ -146,6 +146,7 @@ export default class CSVParser extends Component {
 
     addError = (error) => {
       this.state.errors.push(error)
+      console.log(this.state.errors)
     }
 
     setFieldsHandler = (e) => {

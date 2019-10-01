@@ -5,18 +5,16 @@ export const row = (data, fields, addError, idx) =>{
   //data is just info for one row 
   const errorObj = {}
   const cleanRow = {}
+  let emptyFields = 0
   for(let i = 0; i < fields.length; i++){ 
       let field = fields[i].header
       let fieldRequired = fields[i].required
       if(field === "" || !field ) continue
       let rowData = data[field]
-      //if cell for non-empty column is blank, and row is required, add row and field to error object
-      if((!rowData || rowData === '') && fieldRequired){
-       errorObj['rowIdx'] = errorObj['rowIdx'] || idx
-       errorObj['errorField'] = field
-      }
+      if(rowData === '') emptyFields++ 
       cleanRow[field] = rowData
   }
+  if((emptyFields / fields.length) > .8) return null
   if(Object.keys(errorObj).length > 0) addError(errorObj)
 
   return cleanRow  

@@ -73,29 +73,50 @@ export default class ResultTable extends Component {
       )
     }
     renderBody = (data, headers) => {
-      const bodyHeaders = getBodyHeaders(headers)
+      const bodyHeaders = this.getBodyHeaders(headers)
+      const bodyData = this.getBodyData(data, headers)
+
       return(      
       <Table celled>
         <Table.Header>
           <Table.Row>
-            {headers.map(h => {
-              return <Table.HeaderCell> {h} </Table.HeaderCell>
-            })}
+            {bodyHeaders}
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {data.map( d => {
-            const cells = []
-            for(let i = 0; i < headers.length; i++){
-              const header = headers[i]
-              const cell = <Table.Cell>{d[header]}</Table.Cell>
-              cells.push(cell)
-            }
-            return(cells)
-          })}
+            {bodyData}
         </Table.Body>
       </Table>
       )
+    }
+
+    getBodyHeaders = (headers) => {
+      const headerArray = []
+      headers.forEach(h => {
+        headerArray.push(<Table.HeaderCell> {h.label} </Table.HeaderCell>)
+      })
+      return headerArray
+    }
+
+
+
+    getBodyData = (data, headers) => {
+      //all data (rows with cells)
+      const rowArray = []
+      data = data.slice(1,500)
+      data.forEach( d => {
+        const cells = []
+        const row = <Table.Row>{cells}</Table.Row>
+        for(let i = 0; i < headers.length; i++){
+          const header = headers[i].label
+          const info = d[header]
+          const cell = <Table.Cell>{info}</Table.Cell>
+
+          cells.push(cell)
+        }
+        rowArray.push(row)
+      })
+      return(rowArray)
     }
 
     render(){
