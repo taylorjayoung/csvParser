@@ -24,7 +24,9 @@ export default class CSVParser extends Component {
           requiredHeaders: null,
           fieldObjectsForDownload: null,
           headersSet: false,
-          rowsSet: false
+          rowsSet: false,
+          downloadHeaders: null,
+          errors: []
         }
         this.onChange = this.onChange.bind(this)
         this.updateData = this.updateData.bind(this)
@@ -142,9 +144,37 @@ export default class CSVParser extends Component {
       console.log('set header state')
     }
 
+    addError = (error) => {
+      this.state.errors.push(error)
+    }
+
+    setFieldsHandler = (e) => {
+      e.preventDefault()
+      this.setState({
+        fieldsEstablished: true
+      })
+    }
+
     render(){
-      const { data, fields,rowsSet, fileUploaded, file, csvReady, network, instructions, fieldsEstablished, headersSet } = this.state
-        return(
+      const { 
+        data, 
+        fields,rowsSet, 
+        fileUploaded, 
+        file, 
+        network, 
+        instructions, 
+        headersSet, 
+        fieldsEstablished,
+        downloadHeaders } = this.state
+
+      const {
+        setMasterCsv, 
+        addError, 
+        setHeaderStateTrue, 
+        updateHeaderRequirement, 
+        setFieldsHandler } = this 
+
+      return(
             <div className='csv-wrapper'>
               <div className='instructions-div'>
                 <h1>{ instructions }</h1>
@@ -154,7 +184,8 @@ export default class CSVParser extends Component {
               </div>
               <div className='file-upload-div'>
                { network && !fileUploaded ? this.displayForm() : null}
-               { network && fields ? this.exportCSV() : null}
+               { network && fields && !fieldsEstablished ? ButtonExampleAnimated(setFieldsHandler) : null}
+               { fieldsEstablished ? this.exportCSV() : null}
               </div>        
               { fileUploaded && !data ? this.getData(file) : null }
               <div>
@@ -162,11 +193,14 @@ export default class CSVParser extends Component {
                 <ResultTable 
                   data={data} 
                   fields={fields} 
-                  setCsvData={this.setMasterCsv} 
-                  updateHeaderRequirement={this.updateHeaderRequirement} 
-                  setHeaderStateTrue={this.setHeaderStateTrue}
+                  setCsvData={setMasterCsv} 
+                  updateHeaderRequirement={updateHeaderRequirement} 
+                  setHeaderStateTrue={setHeaderStateTrue}
                   cleanRows={headersSet}
                   rowsSet={rowsSet}
+                  addError={addError}
+                  fieldsEstablished={fieldsEstablished}
+                  downloadHeaders={downloadHeaders}
                   />  : null}
               </div>
             </div>

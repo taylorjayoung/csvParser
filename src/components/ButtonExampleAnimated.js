@@ -1,9 +1,9 @@
 import React from 'react'
 import { Button, Icon } from 'semantic-ui-react'
 
-const ButtonExampleAnimated = (cb1, cb2) => (
+const ButtonExampleAnimated = (setFieldsHandler, cb2) => (
   <div>
-    <Button animated onClick={cb1}>
+    <Button animated onClick={setFieldsHandler}>
       <Button.Content visible>Done Selecting Fields?</Button.Content>
       <Button.Content hidden>
         <Icon name='arrow right' />

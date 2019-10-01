@@ -1,15 +1,24 @@
 import React from 'react'
 
 
-export const row = (data, fields, callback, skipIdx) =>{
+export const row = (data, fields, addError, idx) =>{
   //data is just info for one row 
+  const errorObj = {}
   const cleanRow = {}
-    for(let i = 0; i < fields.length; i++){ 
+  for(let i = 0; i < fields.length; i++){ 
       let field = fields[i].header
+      let fieldRequired = fields[i].required
       if(field === "" || !field ) continue
       let rowData = data[field]
+      //if cell for non-empty column is blank, and row is required, add row and field to error object
+      if((!rowData || rowData === '') && fieldRequired){
+       errorObj['rowIdx'] = errorObj['rowIdx'] || idx
+       errorObj['errorField'] = field
+      }
       cleanRow[field] = rowData
-    }
+  }
+  if(Object.keys(errorObj).length > 0) addError(errorObj)
+
   return cleanRow  
 }
 
