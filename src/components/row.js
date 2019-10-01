@@ -6,15 +6,18 @@ export const row = (data, fields, addError, idx) =>{
   const errorObj = {}
   const cleanRow = {}
   let emptyFields = 0
+  let repeatHeaderCount = 0
   for(let i = 0; i < fields.length; i++){ 
       let field = fields[i].header
       let fieldRequired = fields[i].required
       if(field === "" || !field ) continue
       let rowData = data[field]
       if(rowData === '') emptyFields++ 
+      if(rowData === field) repeatHeaderCount++
       cleanRow[field] = rowData
   }
-  if((emptyFields / fields.length) > .8) return null
+  if(emptyFields  >= 5) return null
+  if((repeatHeaderCount / fields.length) > .5 )return null
   if(Object.keys(errorObj).length > 0) addError(errorObj)
 
   return cleanRow  

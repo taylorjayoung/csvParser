@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, Icon } from 'semantic-ui-react'
 
-const ButtonExampleAnimated = (setFieldsHandler, cb2) => (
+const ButtonExampleAnimated = (setFieldsHandler, resetState) => (
   <div>
     <Button animated onClick={setFieldsHandler}>
       <Button.Content visible>Done Selecting Fields?</Button.Content>
@@ -9,8 +9,8 @@ const ButtonExampleAnimated = (setFieldsHandler, cb2) => (
         <Icon name='arrow right' />
       </Button.Content>
     </Button>
-    <Button animated='vertical'>
-      <Button.Content visible>Choose Another File</Button.Content>
+    <Button animated='vertical' onClick={resetState}>
+      <Button.Content visible>Clear File</Button.Content>
       <Button.Content hidden>
         <Icon name='folder open' />
       </Button.Content>

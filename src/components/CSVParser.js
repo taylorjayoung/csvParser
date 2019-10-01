@@ -7,27 +7,40 @@ import NetworkDropdown from './NetworkDropdown'
 import ButtonExampleAnimated from './ButtonExampleAnimated'
 import './CSVParser.css'
 
-
+const initialState = {
+  file:null,
+  fileUploaded: false,
+  data: null,
+  fields: null,
+  network: null,
+  csvData: [],
+  csvReady: null,
+  instructions: "Select a Network",
+  requiredHeaders: null,
+  fieldObjectsForDownload: null,
+  headersSet: false,
+  rowsSet: false,
+  downloadHeaders: null,
+  errors: []
+}
+const secondState = {
+  file:null,
+  fileUploaded: false,
+  data: null,
+  fields: null,
+  csvData: [],
+  csvReady: null,
+  requiredHeaders: null,
+  fieldObjectsForDownload: null,
+  headersSet: false,
+  rowsSet: false,
+  downloadHeaders: null,
+  errors: []
+}
 export default class CSVParser extends Component {
     constructor(props) {
         super(props);
-        this.state ={
-          file:null,
-          fileUploaded: false,
-          data: null,
-          fields: null,
-          network: null,
-          csvData: [],
-          csvReady: null,
-          instructions: "Select a Network",
-          fieldsEstablished: null,
-          requiredHeaders: null,
-          fieldObjectsForDownload: null,
-          headersSet: false,
-          rowsSet: false,
-          downloadHeaders: null,
-          errors: []
-        }
+        this.state = initialState
         this.onChange = this.onChange.bind(this)
         this.updateData = this.updateData.bind(this)
         this.setMasterCsv = this.setMasterCsv.bind(this)
@@ -85,7 +98,7 @@ export default class CSVParser extends Component {
     exportCSV = () => {
       const fieldObjectsForDownload = this.state.fieldObjectsForDownload
       return(
-        <CSVLink className='export-button' data={this.state.data.slice(1, 5) } headers={fieldObjectsForDownload}>
+        <CSVLink className='export-button' data={this.state.data} headers={fieldObjectsForDownload}>
           Export
         </CSVLink>
         )
@@ -96,7 +109,10 @@ export default class CSVParser extends Component {
     setNetwork = (e, data) => {
       e.preventDefault()
       const network = data.options[data.value - 1]
-      
+      console.log('hit',this.state.fieldsEstablished )
+      if(this.state.downloadHeaders){
+        this.resetToSecondState()
+      }
       if( !network ){
         this.setState({
           network: network,
@@ -152,8 +168,17 @@ export default class CSVParser extends Component {
     setFieldsHandler = (e) => {
       e.preventDefault()
       this.setState({
-        fieldsEstablished: true
+        fieldsEstablished: true,
+        instructions: `Row Count: ${this.state.data.length}`
       })
+    }
+
+    resetState = () => {
+      this.setState(initialState)
+    }
+
+    resetToSecondState = () => {
+      this.setState(secondState)
     }
 
     render(){
@@ -173,7 +198,8 @@ export default class CSVParser extends Component {
         addError, 
         setHeaderStateTrue, 
         updateHeaderRequirement, 
-        setFieldsHandler } = this 
+        setFieldsHandler,
+        resetState } = this 
 
       return(
             <div className='csv-wrapper'>
@@ -185,7 +211,7 @@ export default class CSVParser extends Component {
               </div>
               <div className='file-upload-div'>
                { network && !fileUploaded ? this.displayForm() : null}
-               { network && fields && !fieldsEstablished ? ButtonExampleAnimated(setFieldsHandler) : null}
+               { network && fields && !fieldsEstablished ? ButtonExampleAnimated(setFieldsHandler, resetState) : null}
                { fieldsEstablished ? this.exportCSV() : null}
               </div>        
               { fileUploaded && !data ? this.getData(file) : null }
