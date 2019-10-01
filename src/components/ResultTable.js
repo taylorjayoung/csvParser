@@ -3,26 +3,23 @@ import row from './row'
 import './Table.css'
 import { Icon, Table } from 'semantic-ui-react'
 export default class ResultTable extends Component {
-    constructor(props){
-      super(props)
-      this.state = {
-        headersSet: null
-      }
-    }
+
     //iterate over each row and apply method logic
-    createRows = (data, fields, callback) => {
+    createRows = (data, fields, setCsvData) => {
         const rows = []
-        data.forEach( rowData =>  {
-            const result = row(rowData, fields, callback)
- 
-            if(result) {
-              rows.push(result)
-            }
-        })    
-        return rows
+        for(let i = 0; i < data.length; i++){
+          const rowData = data[i]
+          const result = row( rowData, fields)
+          if(result) {
+            rows.push(result)
+          }
+        }
+        console.log('rows: ',rows)
+        setCsvData(rows)
+        return null
     }
 
-    createHeaders = (fields, callback) => { 
+    createHeaders = (fields, callback, stateSet) => { 
       //take in the fields state from props and create headers for csv
       const headers = []
       for(const field of fields){
@@ -56,12 +53,12 @@ export default class ResultTable extends Component {
         }
 
       }
+      if(!this.props.cleanRows) stateSet();
       return headers
     }
 
     render(){
-        const {data, fields, updateRows, updateHeaderRequirement} = this.props
-        const { headersSet } = this.state
+        const {data, fields, setCsvData, updateHeaderRequirement, setHeaderStateTrue, cleanRows, rowsSet} = this.props
         return(
           <div className="data-table">
         <Table celled>
@@ -72,10 +69,11 @@ export default class ResultTable extends Component {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            { fields ? this.createHeaders(fields, updateHeaderRequirement) : null}
+            { fields ? this.createHeaders(fields, updateHeaderRequirement, setHeaderStateTrue) : null}
           </Table.Body>
         </Table>
-        { headersSet ? this.createRows(data, fields, updateRows) : null}
+          { cleanRows && !rowsSet ? this.createRows(data, fields, setCsvData) : null}
+
           </div>
         )
     }

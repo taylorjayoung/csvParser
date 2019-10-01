@@ -22,11 +22,13 @@ export default class CSVParser extends Component {
           instructions: "Select a Network",
           fieldsEstablished: null,
           requiredHeaders: null,
-          fieldObjectsForDownload: null
+          fieldObjectsForDownload: null,
+          headersSet: false,
+          rowsSet: false
         }
         this.onChange = this.onChange.bind(this)
         this.updateData = this.updateData.bind(this)
-        this.pushRowToMasterCsv = this.pushRowToMasterCsv.bind(this)
+        this.setMasterCsv = this.setMasterCsv.bind(this)
         this.updateHeaderRequirement = this.updateHeaderRequirement.bind(this)
       }
 
@@ -35,6 +37,8 @@ export default class CSVParser extends Component {
             file:e.target.files[0],
             fileUploaded: true
         })
+
+        console.log('file uploaded')
     }
 
 
@@ -49,27 +53,31 @@ export default class CSVParser extends Component {
     updateData(result) {
         const data = result.data;
         const fields = Object.keys(data[0])
+        const cleanBlankFields = fields.filter(f => f !== '')
         let idCounter = 0
-        const fieldObjects = fields.map(textField => {
+        const fieldObjects = cleanBlankFields.map(textField => {
           idCounter++;
           return {header: textField, required: false, id: idCounter};
         })
-        const fieldObjectsForDownload = fields.map(textField => {
+        const fieldObjectsForDownload = cleanBlankFields.map(textField => {
           idCounter++;
           return {label: textField, key: idCounter};
         })
-
         this.setState({
           data: data,
           fields: fieldObjects,
-          csvReady: true
+          downloadHeaders: fieldObjectsForDownload
         });
+        console.log('updated data')
     }
     
 
 
-    pushRowToMasterCsv(row){
-        this.state.csvData.push(row)
+    setMasterCsv(rowData){
+        this.setState({
+          data: rowData,
+          rowsSet: true
+        })
     }
 
     exportCSV = () => {
@@ -98,12 +106,12 @@ export default class CSVParser extends Component {
           instructions: "Upload a Prelog"
         })
       }
+      console.log('network set')
 
     }
     updateHeaderRequirement = (e, id, header ) => {
       e.preventDefault()
-      const headerIdx= this.state.fields.map(function(e) { return e.header; }).indexOf(header);
-      const updatedHeaders = this.state.fields.map(function(header) { 
+      const updatedHeaders = this.state.fields.forEach( header => { 
          if(header.id === id){
            header.required = !header.required
          }; 
@@ -111,6 +119,8 @@ export default class CSVParser extends Component {
         this.setState({
           headers: updatedHeaders
         })
+
+        console.log('update header')
     }
 
     displayForm = () => {
@@ -125,10 +135,15 @@ export default class CSVParser extends Component {
       </form>)
     }
 
-
+    setHeaderStateTrue = () => {
+      this.setState({
+        headersSet: true
+      })
+      console.log('set header state')
+    }
 
     render(){
-      const { data, fields, fileUploaded, file, csvReady, network, instructions, fieldsEstablished } = this.state
+      const { data, fields,rowsSet, fileUploaded, file, csvReady, network, instructions, fieldsEstablished, headersSet } = this.state
         return(
             <div className='csv-wrapper'>
               <div className='instructions-div'>
@@ -147,8 +162,11 @@ export default class CSVParser extends Component {
                 <ResultTable 
                   data={data} 
                   fields={fields} 
-                  updateRows={this.pushRowToMasterCsv} 
+                  setCsvData={this.setMasterCsv} 
                   updateHeaderRequirement={this.updateHeaderRequirement} 
+                  setHeaderStateTrue={this.setHeaderStateTrue}
+                  cleanRows={headersSet}
+                  rowsSet={rowsSet}
                   />  : null}
               </div>
             </div>

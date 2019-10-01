@@ -1,27 +1,22 @@
 import React from 'react'
 
 
-export const row = (data, fields, callback) =>{
-    //the data variable input here is one row of the parsed excel 
-    debugger
-    //checks whether the row is empty 
-    let empty = checkEmpty(data, fields)
-
-    //if row is not empty, enter if statement
-    if(!empty){
-        //set the values of the rows fields in an array to ass to the callback
-        const fields = [data['Property'], data['Agency'],data['Advertiser/Product'],data['Air Date'],data['Aired Length'],data['Order Product Description'],data['Aired Time '],data['Aired Ad-ID'],data['Rate'],data['Rev Code 2'],data['Field 1'],data['Program'],data['Start Time'],data['Time Period'],data['Deal/Order #'],data['Line #']]
-        //'makeRow()' creates an array of html table rows to return to the Table component
-        const jsx = makeRow(fields)
-        callback(fields)
-        return jsx
-    } else return null
+export const row = (data, fields, callback, skipIdx) =>{
+  //data is just info for one row 
+  const cleanRow = {}
+    for(let i = 0; i < fields.length; i++){ 
+      let field = fields[i].header
+      if(field === "" || !field ) continue
+      let rowData = data[field]
+      cleanRow[field] = rowData
+    }
+  return cleanRow  
 }
 
 export default row
 
         
-const checkEmpty = (data, fields) => {
+const checkRow = (data, fields) => {
     let emptyReqCols = []
     let emptyOptCols = []
     
