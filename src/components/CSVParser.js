@@ -21,7 +21,8 @@ const initialState = {
   headersSet: false,
   rowsSet: false,
   downloadHeaders: null,
-  errors: []
+  errors: [],
+  table: null
 }
 const secondState = {
   file:null,
@@ -46,7 +47,14 @@ export default class CSVParser extends Component {
         this.setMasterCsv = this.setMasterCsv.bind(this)
         this.updateHeaderRequirement = this.updateHeaderRequirement.bind(this)
       }
-
+      
+    componentDidMount(){
+      if(this.props.table){
+        this.setState({
+          table:true
+        })
+      }
+    }
     onChange(e) {
         this.setState({
             file:e.target.files[0],
@@ -191,7 +199,8 @@ export default class CSVParser extends Component {
         instructions, 
         headersSet, 
         fieldsEstablished,
-        downloadHeaders } = this.state
+        downloadHeaders,
+        table } = this.state
 
       const {
         setMasterCsv, 
@@ -204,11 +213,10 @@ export default class CSVParser extends Component {
       return(
             <div className='csv-wrapper'>
               <div className='instructions-div'>
-                <h1>{ instructions }</h1>
+                {network && fields && !fieldsEstablished ? ButtonExampleAnimated(setFieldsHandler, resetState) : <h1>{instructions}</h1> }
               </div>
               <div className='file-upload-div'>
                { network && !fileUploaded ? this.displayForm() : null}
-               { network && fields && !fieldsEstablished ? ButtonExampleAnimated(setFieldsHandler, resetState) : null}
                { fieldsEstablished ? this.exportCSV() : null}
               </div>        
               { fileUploaded && !data ? this.getData(file) : null }

@@ -59,7 +59,7 @@ export default class ResultTable extends Component {
 
     renderHeaders = (fields, updateHeaderRequirement, setHeaderStateTrue) => {
       return(        
-      <Table celled>
+      <Table celled inverted selectable>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell> Field Name </Table.HeaderCell>
