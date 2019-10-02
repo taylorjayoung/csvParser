@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './App.css';
 import CSVParser from './components/CSVParser'
-import OrderColumnHome from './ColumnFormatter/OrderColumnHome'
+import OrderColumnHome from './components/ColumnFormatter/OrderColumnHome'
 import ParserDropdown from './ParserDropdown'
 import { isAbsolute } from 'path';
 
@@ -59,14 +59,6 @@ class App extends Component {
       resize: 'both',
       overflow: 'none',
       borderRadius: '5px'
-    }
-
-    const defaultInputWrapperStyle = {
-
-    }
-
-    const tableInputWrapperStyle = {
-
     }
 
     const instructionsStyle = this.state.instructions.length > 0 ? instPresent : null
