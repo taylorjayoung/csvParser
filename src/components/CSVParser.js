@@ -12,10 +12,10 @@ const initialState = {
   fileUploaded: false,
   data: null,
   fields: null,
-  network: null,
+  network: true,
   csvData: [],
   csvReady: null,
-  instructions: "Select a Network",
+  instructions: "Upload a Prelog",
   requiredHeaders: null,
   fieldObjectsForDownload: null,
   headersSet: false,
@@ -205,9 +205,6 @@ export default class CSVParser extends Component {
             <div className='csv-wrapper'>
               <div className='instructions-div'>
                 <h1>{ instructions }</h1>
-              </div>
-              <div className='network-dropdown-div'>
-               <NetworkDropdown setNetwork={this.setNetwork}/>
               </div>
               <div className='file-upload-div'>
                { network && !fileUploaded ? this.displayForm() : null}
