@@ -143,7 +143,7 @@ export default class CSVParser extends Component {
 
     displayForm = () => {
       return(
-      <form className='input-form' onSubmit={this.onFormSubmit}x>
+      <form className='input-form'>
           <input 
           className='input-field'
           type='file' 

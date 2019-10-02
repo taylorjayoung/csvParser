@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import './App.css';
 import CSVParser from './components/CSVParser'
+import OrderColumnHome from './ColumnFormatter/OrderColumnHome'
 import ParserDropdown from './ParserDropdown'
 
 class App extends Component {
@@ -14,7 +15,6 @@ class App extends Component {
   
   setFunction = (e, data) => {
     e.preventDefault()
-    debugger
     const selection = data.options[data.value - 1]
     this.setState({
       selection: selection.value
@@ -28,6 +28,7 @@ class App extends Component {
           {!this.state.selection ? this.state.instructions : null}
           {!this.state.selection ? <ParserDropdown setFunction={this.setFunction} /> : null}
           {this.state.selection === 1 ? <CSVParser />  : null}
+          {this.state.selection === 2 ?<OrderColumnHome /> : null}
           
         </div>
       </div>
