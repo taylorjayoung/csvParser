@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import './App.css';
-import CSVParser from './components/CSVParser'
+import CSVParser from './components/CSVParser/CSVParser'
 import OrderColumnHome from './components/ColumnFormatter/OrderColumnHome'
 import ParserDropdown from './ParserDropdown'
-import { isAbsolute } from 'path';
+
 
 class App extends Component {
   constructor(){
@@ -76,6 +76,7 @@ class App extends Component {
           <div className="body-wrapper">
             {this.state.selection === 1 ? <CSVParser tableFx={this.renderTableStyle}/>  : null}
             {this.state.selection === 2 ?<OrderColumnHome /> : null}
+            
           </div>
         </div>
       </div>
@@ -83,7 +84,7 @@ class App extends Component {
   }
 }
 
-export default App;
+export default App
 
 
 

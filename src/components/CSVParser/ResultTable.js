@@ -14,7 +14,6 @@ export default class ResultTable extends Component {
             rows.push(result)
           }
         }
-        console.log('rows: ',rows)
         setCsvData(rows)
         return null
     }
@@ -24,7 +23,7 @@ export default class ResultTable extends Component {
       const headers = []
       for(const field of fields){
         const iconVal = field.required  ? 'checkmark': 'close'
-        const cellText = field.required ? 'Required' : 'Not Required'
+        const cellText = field.required ? 'Air Date' : 'Not Air Date'
        
        
         if(field.required){
@@ -57,13 +56,13 @@ export default class ResultTable extends Component {
       return headers
     }
 
-    renderHeaders = (fields, updateHeaderRequirement, setHeaderStateTrue) => {
+    renderHeaders = (fields, updateHeaderRequirement, setHeaderStateTrue, cellTitle) => {
       return(        
       <Table celled inverted selectable>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell> Field Name </Table.HeaderCell>
-            <Table.HeaderCell> Required? </Table.HeaderCell>
+            <Table.HeaderCell> {cellTitle} </Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -130,12 +129,13 @@ export default class ResultTable extends Component {
           fieldsEstablished,
           updateHeaderRequirement, 
           setHeaderStateTrue,
-          downloadHeaders } = this.props
+          downloadHeaders,
+          cellTitle } = this.props
 
         return(
           <div className="data-table">
             { cleanRows && !rowsSet ? this.createRows(data, fields, setCsvData, addError) : null}
-            { fieldsEstablished ? this.renderBody(data, downloadHeaders) : this.renderHeaders(fields, updateHeaderRequirement, setHeaderStateTrue)}
+            { fieldsEstablished ? this.renderBody(data, downloadHeaders) : this.renderHeaders(fields, updateHeaderRequirement, setHeaderStateTrue, cellTitle)}
           </div>
         )
     }
