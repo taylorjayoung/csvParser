@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import row from './row'
+import row from '../../CSVParser/row'
 import './Table.css'
 import { Icon, Table } from 'semantic-ui-react'
 export default class ResultTable extends Component {
@@ -56,7 +56,7 @@ export default class ResultTable extends Component {
       return headers
     }
 
-    renderHeaders = (fields, updateHeaderRequirement, setHeaderStateTrue, cellTitle) => {
+    renderHeaders = (fields, updateAirDateRequirement, setHeaderStateTrue, cellTitle) => {
       return(        
       <Table celled inverted selectable>
         <Table.Header>
@@ -66,7 +66,7 @@ export default class ResultTable extends Component {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          { fields ? this.createHeaders(fields, updateHeaderRequirement, setHeaderStateTrue) : null}
+          { fields ? this.createHeaders(fields, updateAirDateRequirement, setHeaderStateTrue) : null}
         </Table.Body>
       </Table>
       )
@@ -127,7 +127,7 @@ export default class ResultTable extends Component {
           cleanRows, 
           rowsSet,
           fieldsEstablished,
-          updateHeaderRequirement, 
+          updateAirDateRequirement, 
           setHeaderStateTrue,
           downloadHeaders,
           cellTitle } = this.props
@@ -135,7 +135,7 @@ export default class ResultTable extends Component {
         return(
           <div className="data-table">
             { cleanRows && !rowsSet ? this.createRows(data, fields, setCsvData, addError) : null}
-            { fieldsEstablished ? this.renderBody(data, downloadHeaders) : this.renderHeaders(fields, updateHeaderRequirement, setHeaderStateTrue, cellTitle)}
+            { fieldsEstablished ? this.renderBody(data, downloadHeaders) : this.renderHeaders(fields, updateAirDateRequirement, setHeaderStateTrue, cellTitle)}
           </div>
         )
     }

@@ -1,59 +1,19 @@
 import React, {Component, Fragment} from 'react';
 import { nullLiteral } from '@babel/types';
-import ResultTable from './ResultTable';
+import ResultTable from '../components/Tables/ResultTable';
 import Papa from 'papaparse'
 import { CSVLink } from "react-csv";
 import NetworkDropdown from './Dropdowns/NetworkDropdown'
-import ButtonExampleAnimated from '../Buttons/ButtonExampleAnimated'
-import NextButton from '../Buttons/NextButton'
+import ButtonExampleAnimated from '../components/Buttons/ButtonExampleAnimated'
+import AirDateNextButton from '../components/Buttons/AirDateNextButton'
+import SchedLengthNextButton from '../components/Buttons/SchedLengthNextButton'
 import VersionDropdown from './Dropdowns/VersionDropdown'
 import Alert from 'react-bootstrap/Alert'
 import './CSVParser.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import ScheduleTable from '../components/Tables/ScheduleTable';
+import {initialState, secondState} from '../components/imports'
 
-
-const initialState = {
-  file:null,
-  fileUploaded: false,
-  data: null,
-  fields: null,
-  network: null,
-  csvData: [],
-  csvReady: null,
-  instructions: "Select A Network",
-  requiredHeaders: null,
-  fieldObjectsForDownload: null,
-  headersSet: false,
-  rowsSet: false,
-  downloadHeaders: null,
-  errors: [],
-  table: null,
-  version: null,
-  cellTitle: 'Air Date?',
-  currentAirDate: null,
-  airDateSelected: null,
-  schedLengthSelected: null,
-  alert: null,
-  headerSelected: null
-}
-const secondState = {
-  file:null,
-  fileUploaded: false,
-  data: null,
-  fields: null,
-  csvData: [],
-  csvReady: null,
-  requiredHeaders: null,
-  fieldObjectsForDownload: null,
-  headersSet: false,
-  rowsSet: false,
-  downloadHeaders: null,
-  errors: [],
-  currentAirDate: null,
-  version: null,
-  cellTitle: 'Air Date?'
-
-}
 export default class CSVParser extends Component {
     constructor(props) {
         super(props);
@@ -61,23 +21,15 @@ export default class CSVParser extends Component {
         this.onChange = this.onChange.bind(this)
         this.updateData = this.updateData.bind(this)
         this.setMasterCsv = this.setMasterCsv.bind(this)
-        this.updateHeaderRequirement = this.updateHeaderRequirement.bind(this)
+        this.updateAirDateRequirement = this.updateAirDateRequirement.bind(this)
       }
-      
-    componentDidMount(){
-      if(this.props.table){
-        this.setState({
-          table:true
-        })
-      }
-    }
+
+
     onChange(e) {
         this.setState({
             file:e.target.files[0],
             fileUploaded: true
         })
-
-        console.log('file uploaded')
     }
 
 
@@ -174,14 +126,10 @@ export default class CSVParser extends Component {
       }
     }
 
-    updateHeaderRequirement = (e, id, header ) => {
+    updateAirDateRequirement = (e, id, header ) => {
       e.preventDefault()
 
       let headerSelected = this.state.headerSelected
-      console.log('condition 1: ',headerSelected && headerSelected!== id  )
-      console.log('condition 2: ',headerSelected && headerSelected === id )
-
-      
       if( headerSelected && (headerSelected !== id) ){
         this.setState({alert: true})
         return}
@@ -247,13 +195,23 @@ export default class CSVParser extends Component {
       this.setState(secondState)
     }
 
-    handleNext = (e, data) => {
+    handleNext = (e) => {
       e.preventDefault()
-      if(this.state.schedLengthSelected){
-        //set fields selected
+      console.log(this.state.airDateSelected)
+      if(this.state.airDateSelected){
+        const clearedRequirements = this.state.fields.map( header => {
+          header.required = false
+          return header
+        })
+        debugger
+        this.setState({
+          schedLengthSelected: true,
+          headers: clearedRequirements
+        }, () => console.log(this.state.fields))
       }
       else{
         this.setState({
+          cellTitle: 'Schedule Length',
           airDateSelected: true
         })
         //queue sched length
@@ -281,7 +239,8 @@ export default class CSVParser extends Component {
     render(){
       const { 
         data, 
-        fields,rowsSet, 
+        fields,
+        rowsSet, 
         fileUploaded, 
         file, 
         network, 
@@ -292,13 +251,15 @@ export default class CSVParser extends Component {
         table,
         cellTitle,
         version,
-        alert } = this.state
+        alert,
+        airDateSelected,
+        schedLengthSelected } = this.state
 
       const {
         setMasterCsv, 
         addError, 
         setHeaderStateTrue, 
-        updateHeaderRequirement, 
+        updateAirDateRequirement, 
         setFieldsHandler,
         resetState,
         setNetwork,
@@ -307,15 +268,7 @@ export default class CSVParser extends Component {
         handleNext,
         renderAlert} = this 
 
-      const buttonInstructions = () => { 
-        let phrase
-        if(cellTitle === 'Air Date?'){
-          phrase = 'Click Me When Air Date Is Selected'
-        } else if ( cellTitle === 'Schedule Length'){
-          phrase = 'Click Me When Schedule Length Is Selected'
-        } else phrase = null
-        return  phrase
-       }
+
       return(
         <>
             <div className="alert-div">
@@ -325,7 +278,8 @@ export default class CSVParser extends Component {
               { network ? <h1>{ version ? `${network.text}: Prelog Version ${version.value}` : network.text }</h1> : null}
               <div className='instructions-div'>
                 {instructions}
-                {fields && !fieldsEstablished  ? NextButton( buttonInstructions(), handleNext, resetState) : null}
+                {fields && !fieldsEstablished && cellTitle === 'Air Date?'  ? AirDateNextButton( 'Click Me When Air Date Is Selected', handleNext, resetState) : null}
+                {fields && !fieldsEstablished && cellTitle === 'Schedule Length'  ? SchedLengthNextButton( 'Click Me When Schedule Length Is Selected', handleNext, resetState) : null}
                 { fields && fieldsEstablished ? ButtonExampleAnimated(setFieldsHandler, resetState) : null }
               </div>
               
@@ -337,12 +291,12 @@ export default class CSVParser extends Component {
               </div>        
               { fileUploaded && !data ? this.getData(file) : null }
               <div>
-                {data && fields ? 
+                {data && fields && !airDateSelected ? 
                 <ResultTable 
                   data={data} 
                   fields={fields} 
                   setCsvData={setMasterCsv} 
-                  updateHeaderRequirement={updateHeaderRequirement} 
+                  updateAirDateRequirement={updateAirDateRequirement} 
                   setHeaderStateTrue={setHeaderStateTrue}
                   cleanRows={headersSet}
                   rowsSet={rowsSet}
@@ -350,7 +304,20 @@ export default class CSVParser extends Component {
                   fieldsEstablished={fieldsEstablished}
                   downloadHeaders={downloadHeaders}
                   cellTitle={cellTitle}
-                  />  : null}
+                  />  :  (data && fields && !schedLengthSelected) ? 
+                <ScheduleTable 
+                    data={data} 
+                    fields={fields} 
+                    setCsvData={setMasterCsv} 
+                    updateAirDateRequirement={updateAirDateRequirement} 
+                    setHeaderStateTrue={setHeaderStateTrue}
+                    cleanRows={headersSet}
+                    rowsSet={rowsSet}
+                    addError={addError}
+                    fieldsEstablished={fieldsEstablished}
+                    downloadHeaders={downloadHeaders}
+                    cellTitle={cellTitle}
+                  /> : null }
               </div>
             </div>
         < />

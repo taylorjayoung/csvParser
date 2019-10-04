@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, Icon } from 'semantic-ui-react'
 import './ButtonExample.css'
 
-const NextButton = (buttonInstructions, handleNext, resetState) => (
+const SchedLengthNextButton = (buttonInstructions, handleNext, resetState) => (
   <div className="button-div">
     <Button animated onClick={handleNext}>
       <Button.Content visible>{buttonInstructions}</Button.Content>
@@ -13,4 +13,4 @@ const NextButton = (buttonInstructions, handleNext, resetState) => (
   </div>
 )
 
-export default NextButton
+export default SchedLengthNextButton

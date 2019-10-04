@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './App.css';
-import CSVParser from './components/CSVParser/CSVParser'
-import OrderColumnHome from './components/ColumnFormatter/OrderColumnHome'
+import CSVParser from './CSVParser/CSVParser'
+import OrderColumnHome from './ColumnFormatter/OrderColumnHome'
 import ParserDropdown from './ParserDropdown'
 
 
@@ -18,11 +18,10 @@ class App extends Component {
   setFunction = (e, data) => {
     e.preventDefault()
     const selection = data.options[data.value - 1]
-    console.log(this.state.instructions.length)
     this.setState({
       selection: selection.value,
       instructions: ''
-    }, () =>     console.log(this.state.instructions.length))
+    })
   }
 
   renderTableStyle = () => {
@@ -31,35 +30,6 @@ class App extends Component {
 
 
   render(){
-    const instPresent = {
-      border: '1px solid black',
-      width: '200px'
-    }
-    const tableAppStyle = {
-      height: '50%',
-      width: '100%',
-      margin: '0 auto',
-      padding: '20px',
-      position: 'absolute',
-      top: '0',
-      alignItems: 'center',
-      resize: 'both',
-      overflow: 'none',
-      borderRadius: '5px'
-    }
-
-    const defaultAppStyle = {
-      height: '50%',
-      width: '100%',
-      margin: '0 auto',
-      padding: '20px',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      resize: 'both',
-      overflow: 'none',
-      borderRadius: '5px'
-    }
 
     const instructionsStyle = this.state.instructions.length > 0 ? instPresent : null
     const appStyle = this.state.tableDisplayed ? tableAppStyle : defaultAppStyle
@@ -76,7 +46,6 @@ class App extends Component {
           <div className="body-wrapper">
             {this.state.selection === 1 ? <CSVParser tableFx={this.renderTableStyle}/>  : null}
             {this.state.selection === 2 ?<OrderColumnHome /> : null}
-            
           </div>
         </div>
       </div>
@@ -90,3 +59,34 @@ export default App
 
 
 
+
+
+const instPresent = {
+  border: '1px solid black',
+  width: '200px'
+}
+const tableAppStyle = {
+  height: '50%',
+  width: '100%',
+  margin: '0 auto',
+  padding: '20px',
+  position: 'absolute',
+  top: '0',
+  alignItems: 'center',
+  resize: 'both',
+  overflow: 'none',
+  borderRadius: '5px'
+}
+
+const defaultAppStyle = {
+  height: '50%',
+  width: '100%',
+  margin: '0 auto',
+  padding: '20px',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  resize: 'both',
+  overflow: 'none',
+  borderRadius: '5px'
+}
