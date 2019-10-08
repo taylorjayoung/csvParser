@@ -33,6 +33,10 @@ export function onChange(e){
 
 export function updateData(result) {
   const data = result.data;
+  const versionData = data.map( d => {
+    d['Version'] = this.state.version.value
+    return d
+  })
   const fields = Object.keys(data[0])
   const cleanBlankFields = fields.filter(f => f !== '')
   let idCounter = 0
@@ -41,11 +45,16 @@ export function updateData(result) {
     idCounter++;
     return {header: textField, required: false, id: idCounter};
   })
+  idCounter++;
+  fieldObjects.push({header: 'Version', required: false, key: idCounter})
 
   const fieldObjectsForDownload = cleanBlankFields.map(textField => {
     idCounter++;
     return {label: textField, key: idCounter};
   })
+  idCounter++
+  fieldObjectsForDownload.push({label: 'Version', key: idCounter})
+  
   if(this.state.katz){
     this.setState({
       data: data,
@@ -55,7 +64,7 @@ export function updateData(result) {
     });
   } else {
     this.setState({
-      data: data,
+      data: versionData,
       fields: fieldObjects,
       downloadHeaders: fieldObjectsForDownload,
       instructions: 'Click "Export" to Download CSV'
@@ -193,6 +202,33 @@ export function handleNext(e){
   e.preventDefault()
   
   if(this.state.airDateSelected){
+    const dateIdx = this.state.airdDateId - 1
+    const schedIdx = this.state.schedLengthId - 1
+    const data = this.state.data
+    const dataKeys = Object.keys(data[0])
+    const dateCol = dataKeys[dateIdx]
+    const schedCol = dataKeys[schedIdx] 
+    
+    data.map( data => {
+      let date = data[dateCol].split('/')
+      let month = date[0].length < 2 ? `0${date[0]}` : date[0]
+      let day = date[1].length < 2 ? `0${date[1]}` : date[1]
+      let year = date[2] < 4 ? `20${date[2]}` : date[2]
+      const reformattedDate = `${month}/${day}/${year}`
+      data[dateCol] = reformattedDate
+      //reformat time
+      let length = data[schedCol]
+      const time = length.split(':')
+      const min = parseInt(time[0]) * 60
+      const sec = parseInt(time[1])
+      let total = min + sec
+      if(!min){ 
+        total = sec
+      }
+      data[schedCol] = total
+ 
+      return data
+    })
     this.setState({
       schedLengthSelected: true,
       fieldsEstablished: true,
@@ -212,6 +248,10 @@ export function handleNext(e){
     })
   }
 }
+
+export function formatAirDateAndSchedLength(date, sched){
+  //format here
+} 
 
 
 
