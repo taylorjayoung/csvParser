@@ -88,34 +88,34 @@ export default class ResultTable extends Component {
       )
     }
 
-    getBodyHeaders = (headers) => {
-      const headerArray = []
-      headers.forEach(h => {
-        headerArray.push(<Table.HeaderCell> {h.label} </Table.HeaderCell>)
-      })
-      return headerArray
-    }
+    // getBodyHeaders = (headers) => {
+    //   const headerArray = []
+    //   headers.forEach(h => {
+    //     headerArray.push(<Table.HeaderCell> {h.label} </Table.HeaderCell>)
+    //   })
+    //   return headerArray
+    // }
 
 
 
-    getBodyData = (data, headers) => {
-      //all data (rows with cells)
-      const rowArray = []
-      data = data.slice(1,500)
-      data.forEach( d => {
-        const cells = []
-        const row = <Table.Row>{cells}</Table.Row>
-        for(let i = 0; i < headers.length; i++){
-          const header = headers[i].label
-          const info = d[header]
-          const cell = <Table.Cell>{info}</Table.Cell>
+    // getBodyData = (data, headers) => {
+    //   //all data (rows with cells)
+    //   const rowArray = []
+    //   data = data.slice(1,500)
+    //   data.forEach( d => {
+    //     const cells = []
+    //     const row = <Table.Row>{cells}</Table.Row>
+    //     for(let i = 0; i < headers.length; i++){
+    //       const header = headers[i].label
+    //       const info = d[header]
+    //       const cell = <Table.Cell>{info}</Table.Cell>
 
-          cells.push(cell)
-        }
-        rowArray.push(row)
-      })
-      return(rowArray)
-    }
+    //       cells.push(cell)
+    //     }
+    //     rowArray.push(row)
+    //   })
+    //   return(rowArray)
+    // }
 
     render(){
         const {

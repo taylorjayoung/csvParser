@@ -3,7 +3,6 @@ import React from 'react'
 export function setNetwork(e, data){
   e.preventDefault()
   const network = data.options[data.value - 1]
-  debugger
   if(this.state.downloadHeaders){
     this.resetToSecondState()
   }
@@ -91,31 +90,63 @@ if( !version ){
 }
 }
 
+export function updateSched(e, id, header){
+  e.preventDefault()
+
+  let schedLengthId = this.state.schedLengthId
+  if( schedLengthId && (schedLengthId !== id) ){
+    this.setState({alert: true})
+    return
+  }
+    
+  else if( schedLengthId && (schedLengthId === id )){
+    schedLengthId = null
+  }
+
+  else if( !schedLengthId ){
+    schedLengthId = id
+  }
+
+  const updatedHeaders = this.state.fields.map( header => { 
+      if(header.id === id){
+        header.required = !header.required
+      }; 
+      return header
+  });
+  
+  this.setState({
+    fields: updatedHeaders,
+    schedLengthId: schedLengthId
+  })
+}
+
 export function updateAirDateRequirement(e, id, header ){
   e.preventDefault()
 
-  let headerSelected = this.state.headerSelected
-  if( headerSelected && (headerSelected !== id) ){
+  let airdDateId = this.state.airdDateId
+  if( airdDateId && (airdDateId !== id) ){
     this.setState({alert: true})
     return}
     
-  else if( headerSelected && (headerSelected === id )){
-    headerSelected = null
+  else if( airdDateId && (airdDateId === id )){
+    airdDateId = null
   }
 
-  else if( !headerSelected ){
-    headerSelected = id
+  else if( !airdDateId ){
+    airdDateId = id
   }
 
-  const updatedHeaders = this.state.fields.forEach( header => { 
+
+  const updatedHeaders = this.state.fields.map( header => { 
     if(header.id === id){
       header.required = !header.required
     }; 
-    });
+    return header
+  });
   
   this.setState({
     headers: updatedHeaders,
-    headerSelected: headerSelected
+    airdDateId: airdDateId
   })
 
 }
@@ -160,20 +191,24 @@ export function resetToSecondState(){
 
 export function handleNext(e){
   e.preventDefault()
+  
   if(this.state.airDateSelected){
-    const clearedRequirements = this.state.fields.map( header => {
-      header.required = false
-      return header
-    })
     this.setState({
       schedLengthSelected: true,
-      headers: clearedRequirements
+      fieldsEstablished: true,
+      instructions: 'Click "Export" to Download CSV.'
     })
   }
   else{
+    const fields = this.state.fields.map(field => {
+      field.required = false
+      return field
+    })
     this.setState({
       cellTitle: 'Schedule Length',
-      airDateSelected: true
+      instructions: 'Click on "Schedule Length" to Select.',
+      airDateSelected: true,
+      fields: fields 
     })
   }
 }

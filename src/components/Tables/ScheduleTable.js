@@ -3,7 +3,8 @@ import row from '../../CSVParser/row'
 import './Table.css'
 import { Icon, Table } from 'semantic-ui-react'
 export default class ResultTable extends Component {
-
+  componentDidMount(props){
+  }
     //iterate over each row and apply method logic
     createRows = (data, fields, setCsvData, addError) => {
         const rows = []
@@ -19,15 +20,11 @@ export default class ResultTable extends Component {
     }
 
     createHeaders = (fields, callback, stateSet) => {
-      console.log('schedule table: createHeaders')
-
       //take in the fields state from props and create headers for csv
       const headers = []
       for(const field of fields){
         const iconVal = field.required  ? 'checkmark': 'close'
         const cellText = field.required ? 'Sched Length Field' : 'Not Sched Length Field'
-       
-       
         if(field.required){
           const row = (
             <Table.Row positive  key={field.id} onClick={(e) => callback(e, field.id, field.header)}>
@@ -58,9 +55,7 @@ export default class ResultTable extends Component {
       return headers
     }
 
-    renderHeaders = (fields, updateAirDateRequirement, setHeaderStateTrue, cellTitle) => {
-      console.log('schedule table: renderHeaders')
-
+    renderHeaders = (fields, updateSchedLengthId, setHeaderStateTrue, cellTitle) => {
       return(        
       <Table celled inverted selectable>
         <Table.Header>
@@ -70,7 +65,7 @@ export default class ResultTable extends Component {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          { fields ? this.createHeaders(fields, updateAirDateRequirement, setHeaderStateTrue) : null}
+          { fields ? this.createHeaders(fields, updateSchedLengthId, setHeaderStateTrue) : null}
         </Table.Body>
       </Table>
       )
@@ -132,7 +127,7 @@ export default class ResultTable extends Component {
           cleanRows, 
           rowsSet,
           fieldsEstablished,
-          updateAirDateRequirement, 
+          updateSched, 
           setHeaderStateTrue,
           downloadHeaders,
           cellTitle } = this.props
@@ -140,7 +135,7 @@ export default class ResultTable extends Component {
         return(
           <div className="data-table">
             { cleanRows && !rowsSet ? this.createRows(data, fields, setCsvData, addError) : null}
-            { fieldsEstablished ? this.renderBody(data, downloadHeaders) : this.renderHeaders(fields, updateAirDateRequirement, setHeaderStateTrue, cellTitle)}
+            { fieldsEstablished ? this.renderBody(data, downloadHeaders) : this.renderHeaders(fields, updateSched, setHeaderStateTrue, cellTitle)}
           </div>
         )
     }

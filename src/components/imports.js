@@ -22,7 +22,9 @@ export const initialState = {
   airDateSelected: null,
   schedLengthSelected: null,
   alert: null,
-  headerSelected: null
+  airdDateId: null,
+  schedLengthID: null
+
 }
 
 export const secondState = {

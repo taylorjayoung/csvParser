@@ -25,6 +25,7 @@ import { setNetwork,
   resetState,
   resetToSecondState,
   handleNext,
+  updateSched
 } from './helpers/helpers'
 export default class CSVParser extends Component {
     constructor(props) {
@@ -45,6 +46,8 @@ export default class CSVParser extends Component {
         this.resetState = resetState.bind(this)
         this.resetToSecondState = resetToSecondState.bind(this)
         this.handleNext = handleNext.bind(this)
+        this.updateSched = updateSched.bind(this)
+        this.renderAlert = this.renderAlert.bind(this)
       }
 
      exportCSV(){
@@ -96,7 +99,9 @@ export default class CSVParser extends Component {
         cellTitle,
         version,
         alert,
-        schedLengthSelected } = this.state
+        katz,
+        schedLengthSelected,
+      } = this.state
 
       const {
         setMasterCsv, 
@@ -109,15 +114,16 @@ export default class CSVParser extends Component {
         displayForm,
         setVersion, 
         handleNext,
-        renderAlert} = this 
+        renderAlert,
+        updateSched
+      } = this 
   
       const displayNetworkDropdown = !network
       const displayVersionDropdown = network && !version 
       const displayFileUploadButton = version && !fileUploaded
-      const displayExportButton = fieldsEstablished 
-      const katz = network ? network.katz : null
+      const displayExportButton = fieldsEstablished || schedLengthSelected
       const renderAirDate = fields && !fieldsEstablished && cellTitle === 'Air Date?' && katz
-      const renderScheduleButton = fields && !fieldsEstablished && cellTitle === 'Schedule Length' && 
+      const renderScheduleButton = fields && !fieldsEstablished && cellTitle === 'Schedule Length' && katz && !schedLengthSelected
 
       return(
         <>
@@ -130,7 +136,6 @@ export default class CSVParser extends Component {
                 {instructions}
                 { renderAirDate ? AirDateNextButton(handleNext) : null}
                 { renderScheduleButton ? SchedLengthNextButton(handleNext) : null}
-                { fields && fieldsEstablished ? ButtonExampleAnimated( setFieldsHandler, resetState) : null }
               </div>
               
               <div className='file-upload-div'>
@@ -161,7 +166,6 @@ export default class CSVParser extends Component {
                     data={data} 
                     fields={fields} 
                     setCsvData={setMasterCsv} 
-                    updateAirDateRequirement={updateAirDateRequirement} 
                     setHeaderStateTrue={setHeaderStateTrue}
                     cleanRows={headersSet}
                     rowsSet={rowsSet}
@@ -169,6 +173,7 @@ export default class CSVParser extends Component {
                     fieldsEstablished={fieldsEstablished}
                     downloadHeaders={downloadHeaders}
                     cellTitle={cellTitle}
+                    updateSched={updateSched}
                   /> : null }
               </div>
 
