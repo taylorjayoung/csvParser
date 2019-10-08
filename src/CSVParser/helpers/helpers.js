@@ -3,18 +3,21 @@ import React from 'react'
 export function setNetwork(e, data){
   e.preventDefault()
   const network = data.options[data.value - 1]
-  
+  debugger
   if(this.state.downloadHeaders){
     this.resetToSecondState()
   }
+  
   if( !network ){
     this.setState({
       network: network,
+      katz: null,
       instructions: "Select a Network"
     })
   } else {
     this.setState({
       network: network,
+      katz: network.katz,
       instructions: "Select a Version Number"
     })
   }
@@ -44,14 +47,22 @@ export function updateData(result) {
     idCounter++;
     return {label: textField, key: idCounter};
   })
-  
-  this.setState({
-    data: data,
-    fields: fieldObjects,
-    downloadHeaders: fieldObjectsForDownload,
-    instructions: 'Click on "Air Date" Field'
-  });
-  console.log('updated data')
+  if(this.state.katz){
+    this.setState({
+      data: data,
+      fields: fieldObjects,
+      downloadHeaders: fieldObjectsForDownload,
+      instructions: 'Click on "Air Date" Field'
+    });
+  } else {
+    this.setState({
+      data: data,
+      fields: fieldObjects,
+      downloadHeaders: fieldObjectsForDownload,
+      instructions: 'Click "Export" to Download CSV'
+    });
+  }
+
 }
 
 
@@ -76,7 +87,7 @@ if( !version ){
   this.setState({
     version: version,
     instructions: "Upload a Prelog"
-  }, () => console.log('version: ', this.state))
+  })
 }
 }
 
@@ -122,23 +133,21 @@ return(
 }
 
 export function setHeaderStateTrue(){
-this.setState({
-  headersSet: true
-})
-console.log('set header state')
+  this.setState({
+    headersSet: true
+  })
 }
 
 export function addError(error){
-this.state.errors.push(error)
-console.log(this.state.errors)
+  this.state.errors.push(error)
 }
 
 export function setFieldsHandler(e){
-e.preventDefault()
-this.setState({
-  fieldsEstablished: true,
-  instructions: `Row Count: ${this.state.data.length}`
-})
+  e.preventDefault()
+  this.setState({
+    fieldsEstablished: true,
+    instructions: `Row Count: ${this.state.data.length}`
+  })
 }
 
 export function resetState(){
@@ -150,25 +159,22 @@ export function resetToSecondState(){
 }
 
 export function handleNext(e){
-e.preventDefault()
-console.log(this.state.airDateSelected)
-if(this.state.airDateSelected){
-  const clearedRequirements = this.state.fields.map( header => {
-    header.required = false
-    return header
-  })
-  debugger
-  this.setState({
-    schedLengthSelected: true,
-    headers: clearedRequirements
-  }, () => console.log(this.state.fields))
-}
+  e.preventDefault()
+  if(this.state.airDateSelected){
+    const clearedRequirements = this.state.fields.map( header => {
+      header.required = false
+      return header
+    })
+    this.setState({
+      schedLengthSelected: true,
+      headers: clearedRequirements
+    })
+  }
   else{
     this.setState({
       cellTitle: 'Schedule Length',
       airDateSelected: true
     })
-    //queue sched length
   }
 }
 

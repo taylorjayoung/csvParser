@@ -25,7 +25,6 @@ export default class ResultTable extends Component {
         const iconVal = field.required  ? 'checkmark': 'close'
         const cellText = field.required ? 'Air Date' : 'Not Air Date'
        
-       
         if(field.required){
           const row = (
             <Table.Row positive  key={field.id} onClick={(e) => callback(e, field.id, field.header)}>

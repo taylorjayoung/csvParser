@@ -93,11 +93,9 @@ export default class CSVParser extends Component {
         headersSet, 
         fieldsEstablished,
         downloadHeaders,
-        table,
         cellTitle,
         version,
         alert,
-        airDateSelected,
         schedLengthSelected } = this.state
 
       const {
@@ -114,12 +112,12 @@ export default class CSVParser extends Component {
         renderAlert} = this 
   
       const displayNetworkDropdown = !network
-      const displayVersionDropdown = network && !version
+      const displayVersionDropdown = network && !version 
       const displayFileUploadButton = version && !fileUploaded
-      const displayExportButton = fieldsEstablished
-      const renderAirDateButton = fields && !fieldsEstablished && cellTitle === 'Air Date?'
-      const renderAirDateTable = fields && !fieldsEstablished && cellTitle === 'Air Date?'
-      const renderScheduleButton = fields && !fieldsEstablished && cellTitle === 'Schedule Length'
+      const displayExportButton = fieldsEstablished 
+      const katz = network ? network.katz : null
+      const renderAirDate = fields && !fieldsEstablished && cellTitle === 'Air Date?' && katz
+      const renderScheduleButton = fields && !fieldsEstablished && cellTitle === 'Schedule Length' && 
 
       return(
         <>
@@ -130,7 +128,7 @@ export default class CSVParser extends Component {
               { network ? <h1>{ version ? `${network.text}: Prelog Version ${version.value}` : network.text }</h1> : null}
               <div className='instructions-div'>
                 {instructions}
-                { renderAirDateButton ? AirDateNextButton(handleNext) : null}
+                { renderAirDate ? AirDateNextButton(handleNext) : null}
                 { renderScheduleButton ? SchedLengthNextButton(handleNext) : null}
                 { fields && fieldsEstablished ? ButtonExampleAnimated( setFieldsHandler, resetState) : null }
               </div>
@@ -139,12 +137,13 @@ export default class CSVParser extends Component {
                { displayNetworkDropdown ? <NetworkDropdown setNetwork={setNetwork} /> : null }
                { displayVersionDropdown ? <VersionDropdown setVersion={setVersion} /> : null  }
                { displayFileUploadButton ? displayForm() : null}
+               {!katz && data? this.exportCSV() : null }
                { displayExportButton ? this.exportCSV() : null}
               </div>        
 
               
               <div>
-                { renderAirDateTable ? 
+                { renderAirDate ? 
                 <ResultTable 
                   data={data} 
                   fields={fields} 
@@ -157,7 +156,7 @@ export default class CSVParser extends Component {
                   fieldsEstablished={fieldsEstablished}
                   downloadHeaders={downloadHeaders}
                   cellTitle={cellTitle}
-                  />  :  (data && fields && !schedLengthSelected) ? 
+                  />  :  (data && fields && !schedLengthSelected && katz) ? 
                 <ScheduleTable 
                     data={data} 
                     fields={fields} 
