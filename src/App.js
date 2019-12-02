@@ -9,7 +9,7 @@ class App extends Component {
   constructor(){
     super()
     this.state = {
-      instructions: 'Select a Network',
+      instructions: 'Choose From Dropdown',
       selection: 1,
       tableDisplayed: null
     }
@@ -36,22 +36,16 @@ class App extends Component {
 
     return (
       <div className="App" style={appStyle}>
-        <div className="input-wrapper" style={instructionsStyle}>
-          <div className="instructions-wrapper" style={instructionsStyle}> 
-           {!this.state.selection ? this.state.instructions : null}
+          <div className="text-box">
+            <h1 className="heading-primary">
+              <span class="heading-primary-main">MVM Toolshed</span>
+              <span class="heading-primary-sub">CSV Parser</span>
+            </h1>
           </div>
-          {/* depricated, originally used when csv-parser has two use-cases
-
-          <div className="dropdown-wrapper" style={instructionsStyle}>
-            {!this.state.selection ? <ParserDropdown setFunction={this.setFunction} table={this.state.tableDisplayed} /> : null}
-          </div>
-          */}
           <div className="body-wrapper">
             {this.state.selection === 1 ? <CSVParser tableFx={this.renderTableStyle}/>  : null}
-            {this.state.selection === 2 ?<OrderColumnHome /> : null}
           </div>
         </div>
-      </div>
     );
   }
 }
@@ -65,9 +59,9 @@ export default App
 
 
 const instPresent = {
-  border: '1px solid black',
   width: '200px'
 }
+
 const tableAppStyle = {
   height: '50%',
   width: '100%',

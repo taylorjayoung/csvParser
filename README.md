@@ -1,3 +1,17 @@
+This is a tool for dynamically reformatting CSVs. There are two functionalities: 1. Reorder columns and 2. Remove whitespace and repeating headers. The UI is crap but the core functionality is there. Can easily be altered for more enhanced features. 
+
+You start by selecting 1 of the 2 functionalities from the dropdown menu. 
+Next you upload your CSV. 
+Then you drag and drop to reorder your columns (if you chose reorder) 
+or you select which fields are required for your CSV (if you chose remove whitespace).
+
+Then you click 'Save Order' or 'Finished Selecting Required Columns'.
+Finally you hit 'Export' which downloads the reformatted CSV.
+
+
+
+The repo can be cloned down by following instructions below.
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
