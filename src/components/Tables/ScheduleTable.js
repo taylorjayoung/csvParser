@@ -70,54 +70,7 @@ export default class ResultTable extends Component {
       </Table>
       )
     }
-    renderBody = (data, headers) => {
-      const bodyHeaders = this.getBodyHeaders(headers)
-      const bodyData = this.getBodyData(data, headers)
-
-      return(      
-      <Table celled>
-        <Table.Header>
-          <Table.Row>
-            {bodyHeaders}
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-            {bodyData}
-        </Table.Body>
-      </Table>
-      )
-    }
-
-    getBodyHeaders = (headers) => {
-      const headerArray = []
-      headers.forEach(h => {
-        headerArray.push(<Table.HeaderCell> {h.label} </Table.HeaderCell>)
-      })
-      return headerArray
-    }
-
-
-
-    getBodyData = (data, headers) => {
-      console.log('schedule table: getBodyData')
-      //all data (rows with cells)
-      const rowArray = []
-      data = data.slice(1,500)
-      data.forEach( d => {
-        const cells = []
-        const row = <Table.Row>{cells}</Table.Row>
-        for(let i = 0; i < headers.length; i++){
-          const header = headers[i].label
-          const info = d[header]
-          const cell = <Table.Cell>{info}</Table.Cell>
-
-          cells.push(cell)
-        }
-        rowArray.push(row)
-      })
-      return(rowArray)
-    }
-
+  
     render(){
         const {
           data, 
@@ -129,13 +82,12 @@ export default class ResultTable extends Component {
           fieldsEstablished,
           updateSched, 
           setHeaderStateTrue,
-          downloadHeaders,
           cellTitle } = this.props
 
         return(
           <div className="data-table">
             { cleanRows && !rowsSet ? this.createRows(data, fields, setCsvData, addError) : null}
-            { fieldsEstablished ? this.renderBody(data, downloadHeaders) : this.renderHeaders(fields, updateSched, setHeaderStateTrue, cellTitle)}
+            { fieldsEstablished ? null : this.renderHeaders(fields, updateSched, setHeaderStateTrue, cellTitle)}
           </div>
         )
     }
