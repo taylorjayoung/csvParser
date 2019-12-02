@@ -9,8 +9,8 @@ class App extends Component {
   constructor(){
     super()
     this.state = {
-      instructions: 'Select a Functionality',
-      selection: null,
+      instructions: 'Select a Network',
+      selection: 1,
       tableDisplayed: null
     }
   }
@@ -40,9 +40,12 @@ class App extends Component {
           <div className="instructions-wrapper" style={instructionsStyle}> 
            {!this.state.selection ? this.state.instructions : null}
           </div>
+          {/* depricated, originally used when csv-parser has two use-cases
+
           <div className="dropdown-wrapper" style={instructionsStyle}>
             {!this.state.selection ? <ParserDropdown setFunction={this.setFunction} table={this.state.tableDisplayed} /> : null}
           </div>
+          */}
           <div className="body-wrapper">
             {this.state.selection === 1 ? <CSVParser tableFx={this.renderTableStyle}/>  : null}
             {this.state.selection === 2 ?<OrderColumnHome /> : null}
